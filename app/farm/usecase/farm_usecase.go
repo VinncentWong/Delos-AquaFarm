@@ -10,6 +10,7 @@ import (
 type IFarmUsecase interface {
 	CreateFarm(farm *domain.Farm) (domain.Farm, error)
 	UpdateFarm(farm *domain.Farm) error
+	DeleteFarm(id string) error
 }
 
 type FarmUsecase struct {
@@ -36,5 +37,14 @@ func (u *FarmUsecase) CreateFarm(farm *domain.Farm) (domain.Farm, error) {
 
 func (u *FarmUsecase) UpdateFarm(farm *domain.Farm) error {
 	err := u.repo.UpdateFarm(farm)
+	return err
+}
+
+func (u *FarmUsecase) DeleteFarm(id string) error {
+	_, err := u.repo.GetFarmById(id)
+	if err != nil {
+		return errors.New("farm doesn't exist")
+	}
+	err = u.repo.DeleteFarm(id)
 	return err
 }
