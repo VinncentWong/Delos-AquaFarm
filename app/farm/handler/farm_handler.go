@@ -79,3 +79,12 @@ func (h *FarmHandler) DeleteFarm(c *gin.Context) {
 	}
 	util.SendResponse(c, http.StatusOK, "success delete farm", true, nil)
 }
+
+func (h *FarmHandler) GetAll(c *gin.Context) {
+	result, err := h.usecase.GetAll()
+	if err != nil {
+		util.SendResponse(c, http.StatusInternalServerError, err.Error(), false, nil)
+		return
+	}
+	util.SendResponse(c, http.StatusOK, "success get farms", true, result)
+}
