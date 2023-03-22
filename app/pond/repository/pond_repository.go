@@ -11,6 +11,7 @@ type IPondRepository interface {
 	GetPondByName(pondName string) (domain.Pond, error)
 	GetPondById(id string) (domain.Pond, error)
 	UpdatePond(pond *domain.Pond) error
+	DeletePond(id string) error
 }
 
 type PondRepository struct {
@@ -53,4 +54,9 @@ func (r *PondRepository) GetPondById(id string) (domain.Pond, error) {
 func (r *PondRepository) UpdatePond(pond *domain.Pond) error {
 	err := r.db.Where("id = ?", pond.ID).Updates(pond).Error
 	return err
+}
+
+func (r *PondRepository) DeletePond(id string) error {
+	err := r.db.Where("id = ?", id).Delete(&domain.Pond{})
+	return err.Error
 }
