@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"errors"
+
 	"github.com/VinncentWong/Delos-AquaFarm/app/farm/repository"
 	"github.com/VinncentWong/Delos-AquaFarm/domain"
 )
@@ -20,6 +22,10 @@ func NewFarmUsecase(repo repository.IFarmRepository) IFarmUsecase {
 }
 
 func (u *FarmUsecase) CreateFarm(farm *domain.Farm) (domain.Farm, error) {
+	_, err := u.repo.GetFarmByName(farm.FarmName)
+	if err == nil {
+		return domain.Farm{}, errors.New("farm already exist in database, duplicate data was denied")
+	}
 	result, err := u.repo.CreateFarm(farm)
 	if err != nil {
 		return domain.Farm{}, err
