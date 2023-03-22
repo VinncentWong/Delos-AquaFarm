@@ -33,9 +33,13 @@ func (u *PondUsecase) CreatePond(idFarm string, pond *domain.Pond) (domain.Pond,
 	if err == nil {
 		return domain.Pond{}, errors.New("pond already exist in database, duplicate data was denied")
 	}
-	result, err := u.pondRepository.CreatePond(idFarm, pond)
+	_, err = u.pondRepository.CreatePond(idFarm, pond)
 	if err != nil {
 		return domain.Pond{}, err
 	}
-	return result, nil
+	ponds, err := u.pondRepository.GetPondByName(pond.Name)
+	if err != nil {
+		return domain.Pond{}, err
+	}
+	return ponds, nil
 }
