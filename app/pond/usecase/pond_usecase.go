@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"errors"
+	"fmt"
 
 	farmRepository "github.com/VinncentWong/Delos-AquaFarm/app/farm/repository"
 	pondRepository "github.com/VinncentWong/Delos-AquaFarm/app/pond/repository"
@@ -10,6 +11,7 @@ import (
 
 type IPondUsecase interface {
 	CreatePond(id string, pond *domain.Pond) (domain.Pond, error)
+	UpdatePond(pond *domain.Pond) error
 }
 
 type PondUsecase struct {
@@ -42,4 +44,15 @@ func (u *PondUsecase) CreatePond(idFarm string, pond *domain.Pond) (domain.Pond,
 		return domain.Pond{}, err
 	}
 	return ponds, nil
+}
+
+func (u *PondUsecase) UpdatePond(pond *domain.Pond) error {
+	result, err := u.pondRepository.GetPondById(fmt.Sprint(pond.ID))
+	if err == nil {
+		result.Name = pond.Name
+		err = u.pondRepository.UpdatePond(&result)
+	} else {
+		err = errors.New("can't insert child without parent, farm_id must exist")
+	}
+	return err
 }
