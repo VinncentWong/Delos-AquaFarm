@@ -7,6 +7,7 @@ import (
 	"github.com/VinncentWong/Delos-AquaFarm/domain"
 	"github.com/VinncentWong/Delos-AquaFarm/util"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 )
 
 type FarmHandler struct {
@@ -24,6 +25,12 @@ func (h *FarmHandler) CreateFarm(c *gin.Context) {
 	err := c.ShouldBindJSON(&container)
 	if err != nil {
 		util.SendResponse(c, http.StatusBadRequest, "fail to bind request body", false, nil)
+		return
+	}
+	err = validator.New().Struct(&container)
+	if err != nil {
+		errs := err.(validator.ValidationErrors)
+		util.SendResponse(c, http.StatusBadRequest, errs.Error(), false, nil)
 		return
 	}
 	result, err := h.usecase.CreateFarm(&container)
