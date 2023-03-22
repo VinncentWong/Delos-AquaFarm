@@ -9,6 +9,7 @@ import (
 
 type IFarmUsecase interface {
 	CreateFarm(farm *domain.Farm) (domain.Farm, error)
+	UpdateFarm(farm *domain.Farm) error
 }
 
 type FarmUsecase struct {
@@ -31,4 +32,9 @@ func (u *FarmUsecase) CreateFarm(farm *domain.Farm) (domain.Farm, error) {
 		return domain.Farm{}, err
 	}
 	return result, nil
+}
+
+func (u *FarmUsecase) UpdateFarm(farm *domain.Farm) error {
+	err := u.repo.UpdateFarm(farm)
+	return err
 }
