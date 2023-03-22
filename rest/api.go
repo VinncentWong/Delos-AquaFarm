@@ -3,7 +3,8 @@ package rest
 import (
 	"net/http"
 
-	"github.com/VinncentWong/Delos-AquaFarm/app/farm/handler"
+	farmHandler "github.com/VinncentWong/Delos-AquaFarm/app/farm/handler"
+	pondHandler "github.com/VinncentWong/Delos-AquaFarm/app/pond/handler"
 	"github.com/gin-gonic/gin"
 )
 
@@ -25,7 +26,12 @@ func (r *Routing) InitializeCheckHealthRouting() {
 	})
 }
 
-func (r *Routing) InitializeFarmRouting(handler *handler.FarmHandler) {
+func (r *Routing) InitializeFarmRouting(handler *farmHandler.FarmHandler) {
 	farmGroup := r.router.Group("/farm")
 	farmGroup.POST("/create", handler.CreateFarm)
+}
+
+func (r *Routing) InitializePondRouting(handler *pondHandler.PondHandler) {
+	pondGroup := r.router.Group("/pond")
+	pondGroup.POST("/create/:farmId", handler.CreatePond)
 }
