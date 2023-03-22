@@ -75,3 +75,13 @@ func (h *PondHandler) UpdatePond(c *gin.Context) {
 	}
 	util.SendResponse(c, http.StatusOK, "success update pond", true, nil)
 }
+
+func (h *PondHandler) DeletePond(c *gin.Context) {
+	pondId := c.Param("pondId")
+	err := h.usecase.DeletePond(pondId)
+	if err != nil {
+		util.SendResponse(c, http.StatusInternalServerError, err.Error(), false, nil)
+		return
+	}
+	util.SendResponse(c, http.StatusOK, "success delete pond", true, nil)
+}
