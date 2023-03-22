@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/VinncentWong/Delos-AquaFarm/app/farm/usecase"
 	"github.com/VinncentWong/Delos-AquaFarm/domain"
@@ -39,4 +40,32 @@ func (h *FarmHandler) CreateFarm(c *gin.Context) {
 		return
 	}
 	util.SendResponse(c, http.StatusCreated, "success create farm", true, result)
+}
+
+func (h *FarmHandler) UpdateFarm(c *gin.Context) {
+	id := c.Param("farmId")
+	var container domain.Farm
+	err := c.ShouldBindJSON(&container)
+	if err != nil {
+		util.SendResponse(c, http.StatusBadRequest, err.Error(), false, nil)
+		return
+	}
+	err = validator.New().Struct(&container)
+	if err != nil {
+		errs := err.(validator.ValidationErrors)
+		util.SendResponse(c, http.StatusBadRequest, errs.Error(), false, nil)
+		return
+	}
+	idInt, err := strconv.Atoi(id)
+	if err != nil {
+		util.SendResponse(c, http.StatusInternalServerError, err.Error(), false, nil)
+		return
+	}
+	container.ID = uint(idInt)
+	err = h.usecase.UpdateFarm(&container)
+	if err != nil {
+		util.SendResponse(c, http.StatusInternalServerError, err.Error(), false, nil)
+		return
+	}
+	util.SendResponse(c, http.StatusOK, "success update farm", true, nil)
 }
