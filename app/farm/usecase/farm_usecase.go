@@ -11,6 +11,7 @@ type IFarmUsecase interface {
 	CreateFarm(farm *domain.Farm) (domain.Farm, error)
 	UpdateFarm(farm *domain.Farm) error
 	DeleteFarm(id string) error
+	GetAll() ([]domain.Farm, error)
 }
 
 type FarmUsecase struct {
@@ -47,4 +48,13 @@ func (u *FarmUsecase) DeleteFarm(id string) error {
 	}
 	err = u.repo.DeleteFarm(id)
 	return err
+}
+
+func (u *FarmUsecase) GetAll() ([]domain.Farm, error) {
+	result, err := u.repo.GetAll()
+	// if no entity is found then return 404 Http Not Found
+	if len(result) == 0 {
+		return []domain.Farm{}, errors.New("farm doesn't exist")
+	}
+	return result, err
 }
