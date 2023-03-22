@@ -12,6 +12,7 @@ type IPondRepository interface {
 	GetPondById(id string) (domain.Pond, error)
 	UpdatePond(pond *domain.Pond) error
 	DeletePond(id string) error
+	GetAll() ([]domain.Pond, error)
 }
 
 type PondRepository struct {
@@ -59,4 +60,20 @@ func (r *PondRepository) UpdatePond(pond *domain.Pond) error {
 func (r *PondRepository) DeletePond(id string) error {
 	err := r.db.Where("id = ?", id).Delete(&domain.Pond{})
 	return err.Error
+}
+
+func (r *PondRepository) GetAll() ([]domain.Pond, error) {
+	var container []domain.Pond
+	err := r.db.Preload("Farm").Find(&container).Error
+	if err != nil {
+		return []domain.Pond{}, err
+	}
+	var ponds []domain.Pond
+	// exclude ponds with farm that has been removed
+	for _, data := range container {
+		if data.Farm.ID != 0 && data.Farm.FarmName != "" {
+			ponds = append(ponds, data)
+		}
+	}
+	return ponds, nil
 }
