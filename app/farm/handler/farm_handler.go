@@ -69,3 +69,13 @@ func (h *FarmHandler) UpdateFarm(c *gin.Context) {
 	}
 	util.SendResponse(c, http.StatusOK, "success update farm", true, nil)
 }
+
+func (h *FarmHandler) DeleteFarm(c *gin.Context) {
+	farmId := c.Param("farmId")
+	err := h.usecase.DeleteFarm(farmId)
+	if err != nil {
+		util.SendResponse(c, http.StatusInternalServerError, err.Error(), false, nil)
+		return
+	}
+	util.SendResponse(c, http.StatusOK, "success delete farm", true, nil)
+}
