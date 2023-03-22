@@ -85,3 +85,12 @@ func (h *PondHandler) DeletePond(c *gin.Context) {
 	}
 	util.SendResponse(c, http.StatusOK, "success delete pond", true, nil)
 }
+
+func (h *PondHandler) GetAll(c *gin.Context) {
+	result, err := h.usecase.GetAll()
+	if err != nil {
+		util.SendResponse(c, http.StatusInternalServerError, err.Error(), false, nil)
+		return
+	}
+	util.SendResponse(c, http.StatusOK, "success get ponds", true, result)
+}
