@@ -12,6 +12,7 @@ import (
 type IPondUsecase interface {
 	CreatePond(id string, pond *domain.Pond) (domain.Pond, error)
 	UpdatePond(pond *domain.Pond) error
+	DeletePond(id string) error
 }
 
 type PondUsecase struct {
@@ -54,5 +55,14 @@ func (u *PondUsecase) UpdatePond(pond *domain.Pond) error {
 	} else {
 		err = errors.New("can't insert child without parent, farm_id must exist")
 	}
+	return err
+}
+
+func (u *PondUsecase) DeletePond(id string) error {
+	_, err := u.pondRepository.GetPondById(id)
+	if err != nil {
+		return errors.New("pond doesn't exist in database")
+	}
+	err = u.pondRepository.DeletePond(id)
 	return err
 }
