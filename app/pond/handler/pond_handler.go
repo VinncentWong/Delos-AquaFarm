@@ -7,6 +7,7 @@ import (
 	"github.com/VinncentWong/Delos-AquaFarm/domain"
 	"github.com/VinncentWong/Delos-AquaFarm/util"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 )
 
 type PondHandler struct {
@@ -25,6 +26,12 @@ func (h *PondHandler) CreatePond(c *gin.Context) {
 	err := c.ShouldBindJSON(&container)
 	if err != nil {
 		util.SendResponse(c, http.StatusBadRequest, err.Error(), false, nil)
+		return
+	}
+	err = validator.New().Struct(&container)
+	if err != nil {
+		errs := err.(validator.ValidationErrors)
+		util.SendResponse(c, http.StatusBadRequest, errs.Error(), false, nil)
 		return
 	}
 	result, err := h.usecase.CreatePond(farmId, &container)
