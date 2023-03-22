@@ -13,6 +13,7 @@ type IPondUsecase interface {
 	CreatePond(id string, pond *domain.Pond) (domain.Pond, error)
 	UpdatePond(pond *domain.Pond) error
 	DeletePond(id string) error
+	GetAll() ([]domain.Pond, error)
 }
 
 type PondUsecase struct {
@@ -53,7 +54,7 @@ func (u *PondUsecase) UpdatePond(pond *domain.Pond) error {
 		result.Name = pond.Name
 		err = u.pondRepository.UpdatePond(&result)
 	} else {
-		err = errors.New("can't insert child without parent, farm_id must exist")
+		err = errors.New("can't insert ponds without farm, farm_id must exist")
 	}
 	return err
 }
@@ -65,4 +66,13 @@ func (u *PondUsecase) DeletePond(id string) error {
 	}
 	err = u.pondRepository.DeletePond(id)
 	return err
+}
+
+func (u *PondUsecase) GetAll() ([]domain.Pond, error) {
+	result, err := u.pondRepository.GetAll()
+	// if no entity is found, then return 404 Not Found
+	if len(result) == 0 {
+		return []domain.Pond{}, errors.New("ponds doesn't exist")
+	}
+	return result, err
 }
