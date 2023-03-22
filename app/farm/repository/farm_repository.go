@@ -10,6 +10,7 @@ type IFarmRepository interface {
 	CreateFarm(farm *domain.Farm) (domain.Farm, error)
 	GetFarmByName(name string) (domain.Farm, error)
 	GetFarmById(id string) (domain.Farm, error)
+	UpdateFarm(farm *domain.Farm) error
 }
 
 type FarmRepository struct {
@@ -46,4 +47,9 @@ func (r *FarmRepository) GetFarmById(id string) (domain.Farm, error) {
 		return domain.Farm{}, result.Error
 	}
 	return container, result.Error
+}
+
+func (r *FarmRepository) UpdateFarm(farm *domain.Farm) error {
+	err := r.db.Save(farm).Error
+	return err
 }
