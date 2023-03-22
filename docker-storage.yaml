@@ -1,0 +1,17 @@
+version: '3.7'
+services:
+  db:
+    image: "postgres:latest"
+    volumes:
+      - aquafarm_volume:/var/lib/postgresql/data
+    networks:
+      - aquafarm_network
+    environment:
+      - POSTGRES_PASSWORD=aquafarm
+    ports:
+      - "6000:5432"
+volumes:
+  aquafarm_volume:
+
+networks:
+  aquafarm_network:
