@@ -31,6 +31,7 @@ func (r *Routing) InitializeFarmRouting(handler *farmHandler.FarmHandler) {
 	farmGroup.POST("/create", handler.CreateFarm)
 	farmGroup.PUT("/update/:farmId", handler.UpdateFarm)
 	farmGroup.DELETE("/delete/:farmId", handler.DeleteFarm)
+	farmGroup.GET("/gets", handler.GetAll)
 }
 
 func (r *Routing) InitializePondRouting(handler *pondHandler.PondHandler) {
@@ -38,4 +39,5 @@ func (r *Routing) InitializePondRouting(handler *pondHandler.PondHandler) {
 	pondGroup.POST("/create/:farmId", handler.CreatePond)
 	pondGroup.PUT("/update/:pondId", handler.UpdatePond)
 	pondGroup.DELETE("/delete/:pondId", handler.DeletePond)
+	pondGroup.GET("/gets", handler.GetAll)
 }
