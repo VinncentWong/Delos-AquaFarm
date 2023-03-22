@@ -29,9 +29,11 @@ func (r *Routing) InitializeCheckHealthRouting() {
 func (r *Routing) InitializeFarmRouting(handler *farmHandler.FarmHandler) {
 	farmGroup := r.router.Group("/farm")
 	farmGroup.POST("/create", handler.CreateFarm)
+	farmGroup.PUT("/update/:farmId", handler.UpdateFarm)
 }
 
 func (r *Routing) InitializePondRouting(handler *pondHandler.PondHandler) {
 	pondGroup := r.router.Group("/pond")
 	pondGroup.POST("/create/:farmId", handler.CreatePond)
+	pondGroup.PUT("/update/:pondId", handler.UpdatePond)
 }
