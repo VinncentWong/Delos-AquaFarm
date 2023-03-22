@@ -10,6 +10,7 @@ type IPondRepository interface {
 	CreatePond(id string, pond *domain.Pond) (domain.Pond, error)
 	GetPondByName(pondName string) (domain.Pond, error)
 	GetPondById(id string) (domain.Pond, error)
+	UpdatePond(pond *domain.Pond) error
 }
 
 type PondRepository struct {
@@ -47,4 +48,9 @@ func (r *PondRepository) GetPondById(id string) (domain.Pond, error) {
 		return domain.Pond{}, err
 	}
 	return container, nil
+}
+
+func (r *PondRepository) UpdatePond(pond *domain.Pond) error {
+	err := r.db.Where("id = ?", pond.ID).Updates(pond).Error
+	return err
 }
