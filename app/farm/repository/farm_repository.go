@@ -12,6 +12,7 @@ type IFarmRepository interface {
 	GetFarmById(id string) (domain.Farm, error)
 	UpdateFarm(farm *domain.Farm) error
 	DeleteFarm(id string) error
+	GetAll() ([]domain.Farm, error)
 }
 
 type FarmRepository struct {
@@ -58,4 +59,13 @@ func (r *FarmRepository) UpdateFarm(farm *domain.Farm) error {
 func (r *FarmRepository) DeleteFarm(id string) error {
 	err := r.db.Where("id = ?", id).Delete(&domain.Farm{})
 	return err.Error
+}
+
+func (r *FarmRepository) GetAll() ([]domain.Farm, error) {
+	var container []domain.Farm
+	err := r.db.Find(&container).Error
+	if err != nil {
+		return []domain.Farm{}, err
+	}
+	return container, nil
 }
