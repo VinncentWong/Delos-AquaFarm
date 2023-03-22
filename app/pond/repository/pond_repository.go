@@ -33,7 +33,7 @@ func (r *PondRepository) CreatePond(idFarm string, pond *domain.Pond) (domain.Po
 
 func (r *PondRepository) GetPondByName(pondName string) (domain.Pond, error) {
 	var container domain.Pond
-	err := r.db.Where("name = ?", pondName).Take(&container).Limit(1).Error
+	err := r.db.Preload("Farm").Where("name = ?", pondName).Take(&container).Limit(1).Error
 	if err != nil {
 		return domain.Pond{}, err
 	}
@@ -42,7 +42,7 @@ func (r *PondRepository) GetPondByName(pondName string) (domain.Pond, error) {
 
 func (r *PondRepository) GetPondById(id string) (domain.Pond, error) {
 	var container domain.Pond
-	err := r.db.Where("id = ?", id).Take(&container).Error
+	err := r.db.Preload("Farm").Where("id = ?", id).Take(&container).Error
 	if err != nil {
 		return domain.Pond{}, err
 	}
