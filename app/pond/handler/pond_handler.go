@@ -101,3 +101,13 @@ func (h *PondHandler) GetAll(c *gin.Context) {
 		return
 	}
 }
+
+func (h *PondHandler) GetPondById(c *gin.Context) {
+	pondId := c.Param("pondId")
+	result, err := h.usecase.GetPondById(pondId)
+	if err != nil {
+		util.SendResponse(c, http.StatusNotFound, err.Error(), false, nil)
+		return
+	}
+	util.SendResponse(c, http.StatusOK, "success get pond", true, result)
+}
