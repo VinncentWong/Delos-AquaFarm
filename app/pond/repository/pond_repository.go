@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"errors"
+
 	"github.com/VinncentWong/Delos-AquaFarm/domain"
 	"github.com/VinncentWong/Delos-AquaFarm/infrastructure"
 	"gorm.io/gorm"
@@ -48,6 +50,9 @@ func (r *PondRepository) GetPondById(id string) (domain.Pond, error) {
 	err := r.db.Preload("Farm").Where("id = ?", id).Take(&container).Error
 	if err != nil {
 		return domain.Pond{}, err
+	}
+	if container.Farm.ID == 0 && container.Farm.FarmName == "" {
+		return domain.Pond{}, errors.New("farm already removed, pond doens't exist")
 	}
 	return container, nil
 }
