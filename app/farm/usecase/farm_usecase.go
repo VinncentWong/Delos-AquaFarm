@@ -12,6 +12,7 @@ type IFarmUsecase interface {
 	UpdateFarm(farm *domain.Farm) error
 	DeleteFarm(id string) error
 	GetAll() ([]domain.Farm, error)
+	GetFarmById(id string) (domain.Farm, error)
 }
 
 type FarmUsecase struct {
@@ -57,4 +58,12 @@ func (u *FarmUsecase) GetAll() ([]domain.Farm, error) {
 		return []domain.Farm{}, errors.New("farms doesn't exist")
 	}
 	return result, err
+}
+
+func (u *FarmUsecase) GetFarmById(id string) (domain.Farm, error) {
+	result, err := u.repo.GetFarmById(id)
+	if err != nil {
+		return domain.Farm{}, err
+	}
+	return result, nil
 }
