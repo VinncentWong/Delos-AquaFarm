@@ -54,7 +54,7 @@ func (u *FarmUsecase) GetAll() ([]domain.Farm, error) {
 	result, err := u.repo.GetAll()
 	// if no entity is found then return 404 Http Not Found
 	if len(result) == 0 {
-		return []domain.Farm{}, errors.New("farm doesn't exist")
+		return []domain.Farm{}, errors.New("farms doesn't exist")
 	}
 	return result, err
 }
