@@ -95,3 +95,13 @@ func (h *FarmHandler) GetAll(c *gin.Context) {
 		return
 	}
 }
+
+func (h *FarmHandler) GetFarmById(c *gin.Context) {
+	farmId := c.Param("farmId")
+	result, err := h.usecase.GetFarmById(farmId)
+	if err != nil {
+		util.SendResponse(c, http.StatusNotFound, "farm not found", false, nil)
+		return
+	}
+	util.SendResponse(c, http.StatusOK, "success get farm", true, result)
+}
