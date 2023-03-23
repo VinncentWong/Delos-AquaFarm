@@ -82,9 +82,16 @@ func (h *FarmHandler) DeleteFarm(c *gin.Context) {
 
 func (h *FarmHandler) GetAll(c *gin.Context) {
 	result, err := h.usecase.GetAll()
-	if err != nil {
+	if err == nil {
+		util.SendResponse(c, http.StatusOK, "success get farms", true, result)
+		return
+	}
+	switch err.Error() {
+	case "farms doesn't exist":
+		util.SendResponse(c, http.StatusNotFound, err.Error(), false, nil)
+		return
+	default:
 		util.SendResponse(c, http.StatusInternalServerError, err.Error(), false, nil)
 		return
 	}
-	util.SendResponse(c, http.StatusOK, "success get farms", true, result)
 }
