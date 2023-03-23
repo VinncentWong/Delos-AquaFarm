@@ -14,6 +14,7 @@ type IPondUsecase interface {
 	UpdatePond(pond *domain.Pond) error
 	DeletePond(id string) error
 	GetAll() ([]domain.Pond, error)
+	GetPondById(id string) (domain.Pond, error)
 }
 
 type PondUsecase struct {
@@ -75,4 +76,12 @@ func (u *PondUsecase) GetAll() ([]domain.Pond, error) {
 		return []domain.Pond{}, errors.New("ponds doesn't exist")
 	}
 	return result, err
+}
+
+func (u *PondUsecase) GetPondById(id string) (domain.Pond, error) {
+	result, err := u.pondRepository.GetPondById(id)
+	if err != nil {
+		return domain.Pond{}, err
+	}
+	return result, nil
 }
