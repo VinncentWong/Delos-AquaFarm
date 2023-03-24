@@ -1,7 +1,6 @@
 package filter
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/VinncentWong/Delos-AquaFarm/domain"
@@ -23,7 +22,6 @@ func NewRecordMiddleware(provider provider.IRecordProvider) *RecordMiddleware {
 func (r *RecordMiddleware) SaveTrackedData() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ipAddress := util.GetIpAddress(c)
-		fmt.Println("ipAddress = ", ipAddress)
 		record := domain.RecordApi{
 			Endpoint:   c.Request.URL.Path,
 			IpAddress:  ipAddress,
