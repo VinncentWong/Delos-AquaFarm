@@ -50,6 +50,10 @@ func (u *PondUsecase) CreatePond(idFarm string, pond *domain.Pond) (domain.Pond,
 }
 
 func (u *PondUsecase) UpdatePond(pond *domain.Pond) (domain.Pond, error) {
+	_, err := u.pondRepository.GetPondByName(pond.Name)
+	if err == nil {
+		return domain.Pond{}, errors.New("pond name already exist in database, duplicate was denied")
+	}
 	result, err := u.pondRepository.GetPondById(fmt.Sprint(pond.ID))
 	if err == nil {
 		result.Name = pond.Name
