@@ -38,7 +38,11 @@ func (u *FarmUsecase) CreateFarm(farm *domain.Farm) (domain.Farm, error) {
 }
 
 func (u *FarmUsecase) UpdateFarm(farm *domain.Farm) error {
-	err := u.repo.UpdateFarm(farm)
+	_, err := u.repo.GetFarmByName(farm.FarmName)
+	if err == nil {
+		return errors.New("farm already exist in database, duplicate was denied")
+	}
+	err = u.repo.UpdateFarm(farm)
 	return err
 }
 
