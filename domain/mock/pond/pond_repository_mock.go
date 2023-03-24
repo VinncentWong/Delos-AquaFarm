@@ -11,52 +11,61 @@ type PondRepositoryMock struct {
 
 func (m *PondRepositoryMock) CreatePond(id string, param *domain.Pond) (domain.Pond, error) {
 	args := m.Mock.Called(id, param)
-	pond := args[0].(domain.Pond)
-	err := args[1].(error)
-	if err != nil {
-		return domain.Pond{}, err
+	pond := args[0].(*domain.Pond)
+	if args[1] == nil {
+		return *pond, nil
 	}
-	return pond, nil
+	err := args[1].(error)
+	return domain.Pond{}, err
 }
 
 func (m *PondRepositoryMock) GetPondByName(pondName string) (domain.Pond, error) {
 	args := m.Mock.Called(pondName)
-	pond := args[0].(domain.Pond)
-	err := args[1].(error)
-	if err != nil {
-		return domain.Pond{}, err
+	pond, ok := args[0].(domain.Pond)
+	if !ok {
+		pond = *(args[0].(*domain.Pond))
 	}
-	return pond, nil
+	if args[1] == nil {
+		return pond, nil
+	}
+	return domain.Pond{}, args[1].(error)
 }
 
 func (m *PondRepositoryMock) GetPondById(id string) (domain.Pond, error) {
 	args := m.Mock.Called(id)
-	pond := args[0].(domain.Pond)
-	err := args[1].(error)
-	if err != nil {
-		return domain.Pond{}, err
+	pond, ok := args[0].(domain.Pond)
+	if !ok {
+		pond = *(args[0].(*domain.Pond))
 	}
-	return pond, nil
+	if args[1] == nil {
+		return pond, nil
+	}
+	err := args[1].(error)
+	return domain.Pond{}, err
 }
 
 func (m *PondRepositoryMock) UpdatePond(pond *domain.Pond) error {
 	args := m.Mock.Called(pond)
-	err := args[0].(error)
-	return err
+	if args[0] == nil {
+		return nil
+	}
+	return args[0].(error)
 }
 
 func (m *PondRepositoryMock) DeletePond(id string) error {
 	args := m.Mock.Called(id)
-	err := args[0].(error)
-	return err
+	if args[0] == nil {
+		return nil
+	}
+	return args[0].(error)
 }
 
 func (m *PondRepositoryMock) GetAll() ([]domain.Pond, error) {
 	args := m.Mock.Called()
-	ponds := args[0].([]domain.Pond)
-	err := args[1].(error)
-	if err != nil {
-		return []domain.Pond{}, err
+	ponds := args[0].(*[]domain.Pond)
+	if args[1] == nil {
+		return *ponds, nil
 	}
-	return ponds, nil
+	err := args[1].(error)
+	return []domain.Pond{}, err
 }

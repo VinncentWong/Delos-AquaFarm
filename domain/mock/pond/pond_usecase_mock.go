@@ -5,14 +5,6 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-/*
-	CreatePond(id string, pond *domain.Pond) (domain.Pond, error)
-	UpdatePond(pond *domain.Pond) error
-	DeletePond(id string) error
-	GetAll() ([]domain.Pond, error)
-	GetPondById(id string) (domain.Pond, error)
-*/
-
 type PondUsecaseMock struct {
 	Mock mock.Mock
 }
@@ -20,41 +12,43 @@ type PondUsecaseMock struct {
 func (m *PondUsecaseMock) CreatePond(id string, param *domain.Pond) (domain.Pond, error) {
 	args := m.Mock.Called(id, param)
 	pond := args[0].(domain.Pond)
-	err := args[1].(error)
-	if err != nil {
-		return domain.Pond{}, err
+	if args[1] == nil {
+		return pond, nil
 	}
-	return pond, nil
+	return domain.Pond{}, args[1].(error)
 }
 
-func (m *PondUsecaseMock) UpdatePond(param *domain.Pond) error {
+func (m *PondUsecaseMock) UpdatePond(param *domain.Pond) (domain.Pond, error) {
 	args := m.Mock.Called(param)
-	err := args[0].(error)
-	return err
+	pond := args[0].(domain.Pond)
+	if args[1] == nil {
+		return pond, nil
+	}
+	return domain.Pond{}, args[1].(error)
 }
 
 func (m *PondUsecaseMock) DeletePond(id string) error {
 	args := m.Mock.Called(id)
-	err := args[0].(error)
-	return err
+	if args[0] == nil {
+		return nil
+	}
+	return args[0].(error)
 }
 
 func (m *PondUsecaseMock) GetAll() ([]domain.Pond, error) {
 	args := m.Mock.Called()
-	ponds := args[0].([]domain.Pond)
-	err := args[1].(error)
-	if err != nil {
-		return []domain.Pond{}, err
+	pond := args[0].([]domain.Pond)
+	if args[1] == nil {
+		return pond, nil
 	}
-	return ponds, nil
+	return []domain.Pond{}, args[1].(error)
 }
 
 func (m *PondUsecaseMock) GetPondById(id string) (domain.Pond, error) {
 	args := m.Mock.Called(id)
 	pond := args[0].(domain.Pond)
-	err := args[1].(error)
-	if err != nil {
-		return domain.Pond{}, err
+	if args[1] == nil {
+		return pond, nil
 	}
-	return pond, nil
+	return domain.Pond{}, args[1].(error)
 }
