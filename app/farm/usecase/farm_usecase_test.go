@@ -8,6 +8,7 @@ import (
 	farmMock "github.com/VinncentWong/Delos-AquaFarm/domain/mock/farm"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"gorm.io/gorm"
 )
 
 var fRepo farmMock.FarmRepositoryMock = farmMock.FarmRepositoryMock{
@@ -68,9 +69,11 @@ func TestUpdateFarm(t *testing.T) {
 	for _, d := range data {
 		t.Run("update farm should be success", func(t *testing.T) {
 			call1 := fRepo.Mock.On("UpdateFarm", &d).Return(nil)
+			call2 := fRepo.Mock.On("GetFarmByName", d.FarmName).Return(d, errors.New("farm doesn't exist"))
 			err := fUsecase.UpdateFarm(&d)
 			assert.Nil(t, err, "err should be nil")
 			call1.Unset()
+			call2.Unset()
 		})
 	}
 }
@@ -170,5 +173,63 @@ func TestGetAll(t *testing.T) {
 }
 
 func TestGetFarmById(t *testing.T) {
-
+	data := []struct {
+		id   string
+		farm domain.Farm
+	}{
+		{
+			id: "1",
+			farm: domain.Farm{
+				Model: gorm.Model{
+					ID: 1,
+				},
+				FarmName: "Farm1",
+			},
+		},
+		{
+			id: "2",
+			farm: domain.Farm{
+				Model: gorm.Model{
+					ID: 2,
+				},
+				FarmName: "Farm2",
+			},
+		},
+		{
+			id: "3",
+			farm: domain.Farm{
+				Model: gorm.Model{
+					ID: 3,
+				},
+				FarmName: "Farm3",
+			},
+		},
+		{
+			id: "4",
+			farm: domain.Farm{
+				Model: gorm.Model{
+					ID: 4,
+				},
+				FarmName: "Farm4",
+			},
+		},
+		{
+			id: "5",
+			farm: domain.Farm{
+				Model: gorm.Model{
+					ID: 5,
+				},
+				FarmName: "Farm5",
+			},
+		},
+	}
+	for _, d := range data {
+		t.Run("get farm by id should success", func(t *testing.T) {
+			caller1 := fRepo.Mock.On("GetFarmById", d.id).Return(d.farm, nil)
+			result, err := fUsecase.GetFarmById(d.id)
+			assert.Nil(t, err, "should return nil")
+			assert.Equal(t, d.farm.FarmName, result.FarmName, "farm name should be equal")
+			caller1.Unset()
+		})
+	}
 }
