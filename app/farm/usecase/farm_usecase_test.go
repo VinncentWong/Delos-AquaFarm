@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"errors"
-	"fmt"
 	"testing"
 
 	"github.com/VinncentWong/Delos-AquaFarm/domain"
@@ -18,7 +17,7 @@ var fRepo farmMock.FarmRepositoryMock = farmMock.FarmRepositoryMock{
 var fUsecase IFarmUsecase = NewFarmUsecase(&fRepo)
 
 func TestCreateFarm(t *testing.T) {
-	data := []*domain.Farm{
+	data := []domain.Farm{
 		{
 			FarmName: "farm1",
 		},
@@ -37,17 +36,19 @@ func TestCreateFarm(t *testing.T) {
 	}
 	for _, d := range data {
 		t.Run("create farm method should success and return same entity", func(t *testing.T) {
-			fRepo.Mock.On("GetFarmByName", d.FarmName).Return(d, errors.New("repository doesn't found farm"))
-			fRepo.Mock.On("CreateFarm", d).Return(d, nil)
-			result, err := fUsecase.CreateFarm(d)
+			call1 := fRepo.Mock.On("GetFarmByName", d.FarmName).Return(d, errors.New("repository doesn't found farm"))
+			call2 := fRepo.Mock.On("CreateFarm", &d).Return(d, nil)
+			result, err := fUsecase.CreateFarm(&d)
 			assert.Nil(t, err, "should not return an error")
 			assert.Equal(t, d.FarmName, result.FarmName, "name should be equal")
+			call1.Unset()
+			call2.Unset()
 		})
 	}
 }
 
 func TestUpdateFarm(t *testing.T) {
-	data := []*domain.Farm{
+	data := []domain.Farm{
 		{
 			FarmName: "farm1",
 		},
@@ -66,9 +67,10 @@ func TestUpdateFarm(t *testing.T) {
 	}
 	for _, d := range data {
 		t.Run("update farm should be success", func(t *testing.T) {
-			fRepo.Mock.On("UpdateFarm", d).Return(nil)
-			err := fUsecase.UpdateFarm(d)
+			call1 := fRepo.Mock.On("UpdateFarm", &d).Return(nil)
+			err := fUsecase.UpdateFarm(&d)
 			assert.Nil(t, err, "err should be nil")
+			call1.Unset()
 		})
 	}
 }
@@ -83,10 +85,12 @@ func TestDeleteFarm(t *testing.T) {
 	}
 	for _, d := range data {
 		t.Run("delete farm should be success", func(t *testing.T) {
-			fRepo.Mock.On("GetFarmById", d).Return(domain.Farm{}, nil)
-			fRepo.Mock.On("DeleteFarm", d).Return(nil)
+			call1 := fRepo.Mock.On("GetFarmById", d).Return(domain.Farm{}, nil)
+			call2 := fRepo.Mock.On("DeleteFarm", d).Return(nil)
 			err := fUsecase.DeleteFarm(d)
 			assert.Nil(t, err, "should be nil")
+			call1.Unset()
+			call2.Unset()
 		})
 	}
 }
@@ -151,16 +155,20 @@ func TestGetAll(t *testing.T) {
 	}
 	for i, d := range data {
 		t.Run("get all farm should be success", func(t *testing.T) {
-			fRepo.Mock.On("GetAll").Return(&d, nil)
+			call1 := fRepo.Mock.On("GetAll").Return(d, nil)
 			result, err := fUsecase.GetAll()
 			assert.Nil(t, err, "should be return nil")
 			assert.Equal(t, len(d), len(result), "length of result with expected should be same")
 			j := 0
 			for _, r := range result {
-				fmt.Println("r in test = ", r.FarmName)
 				assert.Equal(t, data[i][j].FarmName, r.FarmName, "farm name should be same")
 				j++
 			}
+			call1.Unset()
 		})
 	}
+}
+
+func TestGetFarmById(t *testing.T) {
+
 }
