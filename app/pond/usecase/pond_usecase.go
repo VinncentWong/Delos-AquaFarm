@@ -11,7 +11,7 @@ import (
 
 type IPondUsecase interface {
 	CreatePond(id string, pond *domain.Pond) (domain.Pond, error)
-	UpdatePond(pond *domain.Pond) error
+	UpdatePond(pond *domain.Pond) (domain.Pond, error)
 	DeletePond(id string) error
 	GetAll() ([]domain.Pond, error)
 	GetPondById(id string) (domain.Pond, error)
@@ -49,7 +49,7 @@ func (u *PondUsecase) CreatePond(idFarm string, pond *domain.Pond) (domain.Pond,
 	return ponds, nil
 }
 
-func (u *PondUsecase) UpdatePond(pond *domain.Pond) error {
+func (u *PondUsecase) UpdatePond(pond *domain.Pond) (domain.Pond, error) {
 	result, err := u.pondRepository.GetPondById(fmt.Sprint(pond.ID))
 	if err == nil {
 		result.Name = pond.Name
@@ -57,7 +57,7 @@ func (u *PondUsecase) UpdatePond(pond *domain.Pond) error {
 	} else {
 		err = errors.New("can't insert ponds without farm, farm_id must exist")
 	}
-	return err
+	return result, err
 }
 
 func (u *PondUsecase) DeletePond(id string) error {
