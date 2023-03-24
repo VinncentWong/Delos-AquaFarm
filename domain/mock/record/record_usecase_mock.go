@@ -12,19 +12,17 @@ type RecordUsecaseMock struct {
 func (m *RecordUsecaseMock) GetRecord() ([]response.RecordResponse, error) {
 	args := m.Mock.Called()
 	records := args[0].([]response.RecordResponse)
-	err := args[1].(error)
-	if err != nil {
-		return []response.RecordResponse{}, err
+	if args[1] == nil {
+		return records, nil
 	}
-	return records, nil
+	return []response.RecordResponse{}, args[1].(error)
 }
 
 func (m *RecordUsecaseMock) GetUniqueAgent(endpoint string) (int, error) {
 	args := m.Mock.Called(endpoint)
-	numberUniqueAgnet := args[0].(int)
-	err := args[1].(error)
-	if err != nil {
-		return -1, err
+	numberUniqueAgent := args[0].(int)
+	if args[1] == nil {
+		return numberUniqueAgent, nil
 	}
-	return numberUniqueAgnet, nil
+	return -1, args[1].(error)
 }
