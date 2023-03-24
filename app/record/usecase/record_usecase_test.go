@@ -81,6 +81,7 @@ func TestGetRecord(t *testing.T) {
 			j := 0
 			for _, r := range result {
 				assert.Equal(t, data[i][j].Endpoint, r.Endpoint, "endpoint should be equal")
+				assert.Equal(t, data[i][j].MethodName, r.MethodName, "endpoint should be equal")
 				j++
 			}
 			call1.Unset()
