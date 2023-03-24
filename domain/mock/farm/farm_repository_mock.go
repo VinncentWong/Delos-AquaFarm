@@ -1,8 +1,6 @@
 package farm
 
 import (
-	"fmt"
-
 	"github.com/VinncentWong/Delos-AquaFarm/domain"
 	"github.com/stretchr/testify/mock"
 )
@@ -13,9 +11,9 @@ type FarmRepositoryMock struct {
 
 func (m *FarmRepositoryMock) CreateFarm(farm *domain.Farm) (domain.Farm, error) {
 	args := m.Mock.Called(farm)
-	farms := args[0].(*domain.Farm)
+	farms := args[0].(domain.Farm)
 	if args[1] == nil {
-		return *farms, nil
+		return farms, nil
 	}
 	err := args[1].(error)
 	return domain.Farm{}, err
@@ -23,9 +21,9 @@ func (m *FarmRepositoryMock) CreateFarm(farm *domain.Farm) (domain.Farm, error) 
 
 func (m *FarmRepositoryMock) GetFarmByName(name string) (domain.Farm, error) {
 	args := m.Mock.Called(name)
-	farm := args[0].(*domain.Farm)
+	farm := args[0].(domain.Farm)
 	if args[1] == nil {
-		return *farm, nil
+		return farm, nil
 	} else {
 		err := args[1].(error)
 		return domain.Farm{}, err
@@ -64,12 +62,9 @@ func (m *FarmRepositoryMock) DeleteFarm(id string) error {
 
 func (m *FarmRepositoryMock) GetAll() ([]domain.Farm, error) {
 	args := m.Mock.Called()
-	farms := args[0].(*[]domain.Farm)
-	for _, f := range *farms {
-		fmt.Println("f in test = ", f.FarmName)
-	}
+	farms := args[0].([]domain.Farm)
 	if args[1] == nil {
-		return *farms, nil
+		return farms, nil
 	}
 	err := args[0].(error)
 	return []domain.Farm{}, err

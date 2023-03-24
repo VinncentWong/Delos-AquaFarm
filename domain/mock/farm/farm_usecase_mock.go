@@ -19,31 +19,41 @@ type FarmUsecaseMock struct {
 func (m *FarmUsecaseMock) CreateFarm(param *domain.Farm) (domain.Farm, error) {
 	args := m.Mock.Called(param)
 	farm := args[0].(domain.Farm)
-	err := args[1].(error)
-	if err != nil {
-		return domain.Farm{}, err
+	if args[1] == nil {
+		return farm, nil
 	}
-	return farm, nil
+	return domain.Farm{}, args[1].(error)
 }
 
 func (m *FarmUsecaseMock) UpdateFarm(param *domain.Farm) error {
 	args := m.Mock.Called(param)
-	err := args[0].(error)
-	return err
+	if args[0] == nil {
+		return nil
+	}
+	return args[0].(error)
 }
 
 func (m *FarmUsecaseMock) DeleteFarm(id string) error {
 	args := m.Mock.Called(id)
-	err := args[0].(error)
-	return err
+	if args[0] == nil {
+		return nil
+	}
+	return args[0].(error)
 }
 
 func (m *FarmUsecaseMock) GetFarmById(id string) (domain.Farm, error) {
 	args := m.Mock.Called(id)
 	farm := args[0].(domain.Farm)
-	err := args[1].(error)
-	if err != nil {
-		return domain.Farm{}, err
+	if args[1] == nil {
+		return farm, nil
 	}
-	return farm, nil
+	return domain.Farm{}, args[1].(error)
+}
+
+func (m *FarmUsecaseMock) GetAll() ([]domain.Farm, error) {
+	args := m.Mock.Called()
+	if args[1] == nil {
+		return args[0].([]domain.Farm), nil
+	}
+	return []domain.Farm{}, args[1].(error)
 }
