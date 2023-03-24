@@ -207,12 +207,13 @@ func TestUpdatePond(t *testing.T) {
 		t.Run("update pond should success", func(t *testing.T) {
 			call1 := pondRepositoryMock.Mock.On("GetPondById", fmt.Sprint(d.UpdateData.ID)).Return(&d.ResultData, nil)
 			call2 := pondRepositoryMock.Mock.On("UpdatePond", &d.UpdateData).Return(nil)
+			call3 := pondRepositoryMock.Mock.On("GetPondByName", d.UpdateData.Name).Return(d.ResultData, errors.New("pond doesn't exist in database"))
 			result, err := pondUsecase.UpdatePond(&d.UpdateData)
 			assert.Nil(t, err, "should not return an error")
 			assert.Equal(t, d.UpdateData.Name, result.Name, "pond name should be updated")
-
 			call1.Unset()
 			call2.Unset()
+			call3.Unset()
 		})
 	}
 }
