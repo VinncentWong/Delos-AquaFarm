@@ -68,7 +68,7 @@ func (h *PondHandler) UpdatePond(c *gin.Context) {
 		return
 	}
 	container.ID = uint(pondIdInt)
-	err = h.usecase.UpdatePond(&container)
+	_, err = h.usecase.UpdatePond(&container)
 	if err != nil {
 		util.SendResponse(c, http.StatusInternalServerError, err.Error(), false, nil)
 		return
